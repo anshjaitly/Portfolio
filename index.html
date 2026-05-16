@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ansh Jaitly — Builder. Leader. Innovator.</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── THEME TOKENS ── */
+[data-theme="dark"] {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a26;
+  --accent: #e8ff47;
+  --accent2: #47c8ff;
+  --accent3: #ff6b47;
+  --text: #f0f0f8;
+  --muted: #6b6b8a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.14);
+  --nav-bg: rgba(10,10,15,.92);
+  --grid-c: rgba(232,255,71,.025);
+  --orb1: rgba(232,255,71,.07);
+  --orb2: rgba(71,200,255,.05);
+  --calc-f-c: rgba(255,209,102,.85);
+  --calc-f-bg: rgba(255,209,102,.05);
+  --calc-f-bd: rgba(255,209,102,.4);
+  --calc-r: #4dffb4;
+  --risk-c: #ff4d6d;
+  --body-t: rgba(240,240,248,.72);
+  --proj-t: rgba(240,240,248,.58);
+  --shadow: 0 16px 40px rgba(0,0,0,.4);
+  --toggle-bg: #1a1a26;
+  --toggle-icon: '☀️';
+}
+[data-theme="light"] {
+  --bg: #f4f4f0;
+  --surface: #ffffff;
+  --surface2: #eeeee8;
+  --accent: #5c6b00;
+  --accent2: #0066aa;
+  --accent3: #c43a00;
+  --text: #1a1a1a;
+  --muted: #7a7a6a;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.16);
+  --nav-bg: rgba(244,244,240,.95);
+  --grid-c: rgba(92,107,0,.04);
+  --orb1: rgba(92,107,0,.06);
+  --orb2: rgba(0,102,170,.04);
+  --calc-f-c: #7a5500;
+  --calc-f-bg: rgba(120,85,0,.06);
+  --calc-f-bd: rgba(120,85,0,.3);
+  --calc-r: #006644;
+  --risk-c: #cc0022;
+  --body-t: rgba(26,26,26,.75);
+  --proj-t: rgba(26,26,26,.6);
+  --shadow: 0 16px 40px rgba(0,0,0,.1);
+  --toggle-bg: #e8e8e0;
+  --toggle-icon: '🌙';
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; overflow-x:hidden; cursor:none; transition:background .6s ease, color .35s; }
+
+/* Per-page background tints — light mode */
+[data-theme="light"] body.pg-home     { background:#f4f4f0; }
+[data-theme="light"] body.pg-projects { background:#f0f4ee; }
+[data-theme="light"] body.pg-reachbot { background:#fdf4ef; }
+[data-theme="light"] body.pg-awards   { background:#f0f2f8; }
+[data-theme="light"] body.pg-skills   { background:#f3f0f8; }
+[data-theme="light"] body.pg-contact  { background:#f4f4f0; }
+
+/* Per-page background tints — dark mode */
+[data-theme="dark"] body.pg-home     { background:#0a0a0f; }
+[data-theme="dark"] body.pg-projects { background:#080f0a; }
+[data-theme="dark"] body.pg-reachbot { background:#100a08; }
+[data-theme="dark"] body.pg-awards   { background:#08090f; }
+[data-theme="dark"] body.pg-skills   { background:#0a080f; }
+[data-theme="dark"] body.pg-contact  { background:#0a0a0f; }
+
+/* Cursor */
+#cur { width:11px; height:11px; background:var(--accent); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; transition:background .35s; }
+#cur-ring { width:38px; height:38px; border:1.5px solid var(--accent); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:.4; transition:width .2s,height .2s,border-color .35s; }
+
+/* BG */
+.bg-grid { position:fixed; inset:0; z-index:0; background-image:linear-gradient(var(--grid-c) 1px,transparent 1px),linear-gradient(90deg,var(--grid-c) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; transition:background-image .35s; }
+.bg-orb1 { position:fixed; width:700px; height:700px; border-radius:50%; background:radial-gradient(circle,var(--orb1) 0%,transparent 70%); right:-150px; top:50%; transform:translateY(-50%); pointer-events:none; animation:float 8s ease-in-out infinite; z-index:0; }
+.bg-orb2 { position:fixed; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,var(--orb2) 0%,transparent 70%); left:20%; bottom:-150px; pointer-events:none; animation:float 11s ease-in-out infinite reverse; z-index:0; }
+#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+#bg-scene-a, #bg-scene-b { position:absolute; inset:0; transition:opacity 1.2s cubic-bezier(.4,0,.2,1); }
+#bg-scene-b { opacity:0; }
+@keyframes float { 0%,100%{transform:translateY(-50%) scale(1)} 50%{transform:translateY(-52%) scale(1.06)} }
+
+#shell { position:relative; z-index:1; }
+
+/* ── NAV ── */
+nav { position:fixed; top:0; left:0; right:0; z-index:200; background:var(--nav-bg); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); transition:background .35s; }
+.nav-inner { max-width:1200px; margin:0 auto; padding:0 3rem; height:54px; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:.06em; color:var(--accent); text-decoration:none; flex-shrink:0; }
+.page-tabs { display:flex; gap:0; overflow-x:auto; }
+.ptab { font-size:.65rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); padding:.4rem 1rem; border:none; background:none; cursor:pointer; transition:color .2s; border-bottom:2px solid transparent; height:54px; display:flex; align-items:center; font-family:'DM Mono',monospace; white-space:nowrap; }
+.ptab:hover { color:var(--text); }
+.ptab.on { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* Theme toggle */
+.theme-toggle { flex-shrink:0; width:36px; height:36px; border-radius:8px; border:1px solid var(--border2); background:var(--toggle-bg); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1rem; transition:all .2s; }
+.theme-toggle:hover { border-color:var(--accent); transform:scale(1.05); }
+
+.nav-right { display:flex; align-items:center; gap:.8rem; flex-shrink:0; }
+.nav-contact { font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color .2s; }
+.nav-contact:hover { color:var(--accent); }
+
+/* ── PAGES ── */
+.page { display:none; min-height:100vh; padding-top:54px; }
+.page.on { display:block; }
+
+/* ── WRAP ── */
+.wrap { max-width:1200px; margin:0 auto; padding:0 3rem; }
+.sec { padding:5rem 0; }
+.divider { height:1px; background:var(--border); }
+
+/* ── TYPOGRAPHY ── */
+.eyebrow { font-size:.62rem; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); margin-bottom:.9rem; display:flex; align-items:center; gap:.6rem; }
+.eyebrow::after { content:''; width:40px; height:1px; background:var(--accent); opacity:.4; }
+.hero-name { font-family:'DM Serif Display',serif; font-size:clamp(3.5rem,9vw,7.5rem); line-height:.9; letter-spacing:-.02em; }
+.hero-name em { font-style:italic; color:var(--accent); }
+.h2 { font-family:'DM Serif Display',serif; font-size:clamp(2rem,4vw,3.2rem); line-height:1.1; letter-spacing:-.02em; margin-bottom:2.5rem; }
+.body-text { font-size:.88rem; line-height:1.85; color:var(--body-t); }
+.body-text strong { color:var(--text); }
+
+/* ── BUTTONS ── */
+.btn-p { font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--bg); background:var(--accent); padding:.8rem 1.8rem; border-radius:4px; text-decoration:none; transition:all .2s; border:none; cursor:pointer; }
+.btn-p:hover { filter:brightness(1.1); transform:translateY(-2px); box-shadow:0 8px 28px rgba(232,255,71,.2); }
+.btn-s { font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text); background:transparent; padding:.8rem 1.8rem; border-radius:4px; text-decoration:none; border:1px solid var(--border2); transition:all .2s; cursor:pointer; }
+.btn-s:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+
+/* ── TAGS ── */
+.tag { font-size:.58rem; letter-spacing:.08em; text-transform:uppercase; padding:.25rem .6rem; border-radius:3px; border:1px solid var(--border); color:var(--muted); }
+.tag-a { border-color:rgba(92,107,0,.4); color:var(--accent); background:rgba(232,255,71,.06); }
+[data-theme="dark"] .tag-a { border-color:rgba(232,255,71,.3); }
+.tag-b { border-color:rgba(0,102,170,.3); color:var(--accent2); background:rgba(71,200,255,.06); }
+[data-theme="dark"] .tag-b { border-color:rgba(71,200,255,.3); }
+.tag-c { border-color:rgba(196,58,0,.3); color:var(--accent3); background:rgba(255,107,71,.06); }
+[data-theme="dark"] .tag-c { border-color:rgba(255,107,71,.3); }
+
+/* ── REVEAL ── */
+.rv { opacity:0; transform:translateY(22px); transition:opacity .65s ease,transform .65s ease; }
+.rv.in { opacity:1; transform:none; }
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* ════ HOME ════ */
+#p-home .hero-wrap { min-height:calc(100vh - 54px); display:grid; grid-template-columns:1fr 360px; gap:3rem; align-items:center; }
+#p-home .hero-sub { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:400; color:var(--muted); margin:1.5rem 0 2.5rem; line-height:1.65; max-width:520px; }
+#p-home .hero-sub strong { color:var(--text); }
+.hero-btns { display:flex; gap:.8rem; flex-wrap:wrap; }
+.hero-stats { display:flex; gap:3rem; margin-top:4rem; padding-top:3rem; border-top:1px solid var(--border); flex-wrap:wrap; }
+.stat-n { font-family:'DM Serif Display',serif; font-size:2.4rem; color:var(--accent); line-height:1; }
+.stat-l { font-size:.6rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-top:.25rem; }
+
+.id-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:background .35s; }
+.id-card-top { padding:1.2rem 1.5rem; border-bottom:1px solid var(--border); }
+.id-label { font-size:.58rem; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:.4rem; }
+.id-name { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; }
+.id-sub { font-size:.7rem; color:var(--muted); margin-top:.15rem; }
+.id-mid { background:rgba(232,255,71,.04); padding:.8rem 1rem; display:flex; flex-wrap:wrap; gap:.3rem; border-bottom:1px solid var(--border); }
+[data-theme="light"] .id-mid { background:rgba(92,107,0,.04); }
+.id-rows { padding:.6rem 1.5rem; }
+.id-row { display:flex; justify-content:space-between; align-items:center; padding:.55rem 0; border-bottom:1px solid var(--border); font-size:.72rem; color:var(--muted); }
+.id-row:last-child { border:none; }
+.id-row span { color:var(--accent); font-size:.65rem; }
+
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+.about-cards { display:flex; flex-direction:column; gap:.8rem; }
+.info-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.2rem 1.4rem; transition:all .2s; }
+.info-card:hover { border-color:var(--border2); transform:translateX(4px); }
+.info-card-label { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:.35rem; }
+.info-card-value { font-family:'Syne',sans-serif; font-size:.88rem; font-weight:700; }
+.info-card-sub { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
+
+.mission-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.mission-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.5rem; transition:background .35s; }
+.mission-tag { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent3); margin-bottom:.6rem; }
+
+/* ════ PROJECTS ════ */
+.proj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.proj-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.8rem; transition:all .28s; position:relative; overflow:hidden; cursor:pointer; }
+.proj-card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(to right,var(--accent),transparent); opacity:0; transition:opacity .28s; }
+.proj-card:hover { border-color:var(--border2); transform:translateY(-5px); box-shadow:var(--shadow); }
+.proj-card:hover::after { opacity:1; }
+.proj-card.featured { grid-column:span 2; }
+.proj-icon { font-size:1.8rem; margin-bottom:1.2rem; }
+.proj-type { font-size:.58rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:.6rem; }
+.proj-title { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; margin-bottom:.6rem; line-height:1.3; }
+.proj-desc { font-size:.78rem; line-height:1.75; color:var(--proj-t); }
+.proj-tags { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:1.2rem; }
+.proj-link { display:inline-flex; align-items:center; gap:.35rem; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); text-decoration:none; margin-top:1rem; border:none; background:none; cursor:pointer; transition:gap .2s; font-family:'DM Mono',monospace; }
+.proj-link:hover { gap:.6rem; }
+
+/* ════ REACHBOT ════ */
+#p-reachbot .rb-hero { min-height:50vh; display:flex; align-items:center; padding:4rem 0 3rem; }
+.rb-badge { display:inline-flex; align-items:center; gap:.5rem; font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); border:1px solid var(--border2); padding:.35rem .9rem; border-radius:100px; margin-bottom:1.5rem; }
+.rb-badge::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.15} }
+.rb-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:start; margin-top:2rem; }
+.rb-grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin:2rem 0; }
+
+.pstat { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.4rem; position:relative; overflow:hidden; }
+.pstat::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--accent); opacity:.4; }
+.pstat-n { font-family:'DM Serif Display',serif; font-size:2.6rem; color:var(--accent); line-height:1; margin-bottom:.3rem; }
+.pstat-l { font-size:.78rem; color:var(--body-t); line-height:1.4; }
+.pstat-s { font-size:.62rem; letter-spacing:.06em; color:var(--muted); margin-top:.4rem; }
+
+.iter-wrap { display:flex; flex-direction:column; }
+.iter-row { display:flex; gap:1rem; }
+.iter-l { display:flex; flex-direction:column; align-items:center; width:24px; flex-shrink:0; }
+.iter-dot { width:10px; height:10px; border-radius:50%; border:2px solid var(--border2); background:var(--bg); flex-shrink:0; margin-top:4px; }
+.iter-dot.done { background:var(--muted); border-color:var(--muted); }
+.iter-dot.now { background:var(--accent); border-color:var(--accent); box-shadow:0 0 8px var(--accent); }
+.iter-line { width:2px; background:var(--border); flex:1; min-height:12px; margin:3px 0; }
+.iter-b { padding:0 0 20px; flex:1; }
+.iter-when { font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:.25rem; }
+.iter-title { font-family:'Syne',sans-serif; font-size:.88rem; font-weight:700; margin-bottom:.3rem; }
+.iter-desc { font-size:.76rem; color:var(--muted); line-height:1.65; }
+.iter-status { font-size:.6rem; letter-spacing:.08em; margin-top:.4rem; }
+.s-done { color:var(--muted); }
+.s-now { color:var(--accent); }
+
+.calc { background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:1.1rem 1.3rem; margin-bottom:.7rem; transition:background .35s; }
+.calc-l { font-size:.58rem; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:.5rem; }
+.calc-f { font-family:'DM Mono',monospace; font-size:.72rem; color:var(--calc-f-c); background:var(--calc-f-bg); padding:.6rem .9rem; border-radius:4px; border-left:2px solid var(--calc-f-bd); margin-bottom:.5rem; line-height:1.7; white-space:pre-line; }
+.calc-r { font-size:.78rem; color:var(--calc-r); font-weight:600; }
+
+.bom { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.bom-row { display:grid; grid-template-columns:2fr 1fr 1fr; padding:.65rem 1.1rem; border-bottom:1px solid var(--border); font-size:.75rem; align-items:center; }
+.bom-row:last-child { border:none; background:rgba(232,255,71,.04); }
+[data-theme="light"] .bom-row:last-child { background:rgba(92,107,0,.04); }
+.bom-hdr { font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); background:var(--surface2); }
+.bom-name { color:var(--body-t); }
+.bom-spec { font-size:.65rem; color:var(--muted); }
+.bom-price { text-align:right; color:var(--calc-r); font-family:'DM Mono',monospace; }
+.bom-free { color:var(--accent); }
+.bom-total { color:var(--accent); font-size:.9rem; font-weight:700; }
+
+.risk-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:.8rem; }
+.risk { background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:1.1rem 1.3rem; }
+.risk-l { font-size:.58rem; letter-spacing:.18em; text-transform:uppercase; color:var(--risk-c); margin-bottom:.4rem; }
+.risk-t { font-family:'Syne',sans-serif; font-size:.82rem; font-weight:700; margin-bottom:.3rem; }
+.risk-f { font-size:.72rem; color:var(--muted); line-height:1.55; }
+
+.comp-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+.comp { background:var(--surface); border:1px solid var(--border); border-left:3px solid; border-radius:8px; padding:1.3rem 1.5rem; }
+.comp.t1 { border-left-color:var(--accent); }
+.comp.t2 { border-left-color:var(--accent2); }
+.comp-tier { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; margin-bottom:.4rem; }
+.t1 .comp-tier { color:var(--accent); }
+.t2 .comp-tier { color:var(--accent2); }
+.comp-name { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; margin-bottom:.2rem; }
+.comp-prize { font-size:.68rem; color:var(--accent3); margin-bottom:.3rem; }
+.comp-dl { font-size:.62rem; color:var(--muted); margin-bottom:.6rem; }
+.comp-why { font-size:.72rem; color:var(--muted); line-height:1.6; }
+
+.tech-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; }
+.tech-blk { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.2rem; }
+.tech-phase { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:.7rem; }
+.tech-list { list-style:none; display:flex; flex-direction:column; gap:.35rem; }
+.tech-list li { font-size:.72rem; color:var(--muted); display:flex; gap:.4rem; align-items:flex-start; }
+.tech-list li::before { content:'—'; color:var(--accent); font-size:.6rem; flex-shrink:0; margin-top:.1rem; }
+
+/* ════ AWARDS ════ */
+.award-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+.award { display:flex; align-items:flex-start; gap:1rem; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.2rem 1.4rem; transition:all .2s; }
+.award:hover { border-color:var(--border2); transform:translateX(4px); }
+.award-ico { font-size:1.3rem; flex-shrink:0; margin-top:.1rem; }
+.award-name { font-family:'Syne',sans-serif; font-size:.88rem; font-weight:700; margin-bottom:.2rem; }
+.award-org { font-size:.72rem; color:var(--muted); }
+.award-yr { margin-left:auto; font-size:.6rem; color:var(--accent); padding:.2rem .5rem; border:1px solid var(--border2); border-radius:3px; white-space:nowrap; align-self:flex-start; flex-shrink:0; }
+
+/* ════ SKILLS ════ */
+.skill-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+.skill-blk { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.4rem; transition:border-color .2s,background .35s; }
+.skill-blk:hover { border-color:var(--accent2); }
+.skill-ico { font-size:1.4rem; margin-bottom:.9rem; }
+.skill-title { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent2); margin-bottom:.9rem; }
+.skill-list { list-style:none; display:flex; flex-direction:column; gap:.4rem; }
+.skill-list li { font-size:.74rem; color:var(--muted); display:flex; align-items:center; gap:.5rem; }
+.skill-list li::before { content:'—'; color:var(--accent); font-size:.58rem; }
+
+/* LinkedIn */
+.posts-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.post { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.5rem; transition:all .25s; }
+.post:hover { border-color:var(--border2); transform:translateY(-3px); }
+.post-hdr { display:flex; align-items:center; gap:.75rem; margin-bottom:1rem; }
+.post-av { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--accent),rgba(232,255,71,.4)); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:.75rem; font-weight:800; color:#0a0a0f; flex-shrink:0; }
+.post-author { font-size:.8rem; font-weight:600; }
+.post-date { font-size:.62rem; color:var(--muted); }
+.post-body { font-size:.78rem; color:var(--body-t); line-height:1.75; margin-bottom:.9rem; }
+.post-body strong { color:var(--text); }
+.post-link { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); text-decoration:none; }
+
+/* ════ CONTACT ════ */
+#p-contact .contact-wrap { min-height:calc(100vh - 54px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4rem 0; }
+.contact-email { font-family:'DM Serif Display',serif; font-size:clamp(1.8rem,4vw,3.5rem); color:var(--accent); text-decoration:none; position:relative; display:inline-block; }
+.contact-email::after { content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px; background:var(--accent); transform:scaleX(0); transition:transform .3s; }
+.contact-email:hover::after { transform:scaleX(1); }
+.contact-links { display:flex; justify-content:center; gap:1rem; margin-top:2rem; flex-wrap:wrap; }
+
+/* ════ DIAGRAMS ════ */
+.diagram-wrap { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin-top:2rem; overflow:hidden; }
+.diagram-title { font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:1.2rem; }
+svg text { font-family:'DM Mono',monospace; fill:var(--text); }
+
+/* Radar chart */
+.radar-svg { width:100%; max-width:340px; display:block; margin:0 auto; }
+
+/* Timeline diagram */
+.tl-svg { width:100%; display:block; }
+
+/* Phase donut */
+.donut-svg { width:100%; max-width:260px; display:block; margin:0 auto; }
+
+/* Cost bar */
+.bar-svg { width:100%; display:block; }
+
+footer { padding:1.5rem 3rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.foot { font-size:.62rem; letter-spacing:.1em; color:var(--muted); }
+.foot a { color:var(--accent); text-decoration:none; }
+
+@media(max-width:900px){
+  .wrap{padding:0 1.5rem;}
+  .nav-inner{padding:0 1rem;}
+  #p-home .hero-wrap{grid-template-columns:1fr;}
+  .id-card{display:none;}
+  .about-grid,.rb-grid2{grid-template-columns:1fr;gap:2rem;}
+  .proj-grid,.posts-grid{grid-template-columns:1fr;}
+  .proj-card.featured{grid-column:span 1;}
+  .award-grid,.comp-grid,.mission-grid{grid-template-columns:1fr;}
+  .skill-grid,.tech-cols{grid-template-columns:1fr 1fr;}
+  .rb-grid3{grid-template-columns:1fr 1fr;}
+  .page-tabs{overflow-x:auto;}
+  .ptab{font-size:.55rem;padding:.4rem .7rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div class="bg-grid"></div>
+<div class="bg-orb1"></div>
+<div class="bg-orb2"></div>
+<div id="bg-canvas">
+  <svg id="bg-scene-a" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>
+  <svg id="bg-scene-b" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo" onclick="showPage('home');return false;">AJ</a>
+    <div class="page-tabs">
+      <button class="ptab on"     onclick="showPage('home')">Home</button>
+      <button class="ptab"        onclick="showPage('projects')">Projects</button>
+      <button class="ptab"        onclick="showPage('reachbot')">ReachBot</button>
+      <button class="ptab"        onclick="showPage('awards')">Awards</button>
+      <button class="ptab"        onclick="showPage('skills')">Skills</button>
+      <button class="ptab"        onclick="showPage('contact')">Contact</button>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
+      <a href="mailto:jaitly.ansh.1@gmail.com" class="nav-contact">Email ↗</a>
+    </div>
+  </div>
+</nav>
+
+<div id="shell">
+
+<!-- ══════════ HOME ══════════ -->
+<div id="p-home" class="page on">
+  <div class="wrap">
+    <section class="hero-wrap">
+      <div>
+        <div class="eyebrow rv">Sophomore · DVHS · Class of 2028</div>
+        <h1 class="hero-name rv d1">Ansh<br><em>Jaitly</em></h1>
+        <p class="hero-sub rv d2">Robotics team lead. AI builder. Community advocate.<br>
+        <strong>6+ years</strong> building robots — now building things that <strong>matter beyond competition.</strong></p>
+        <div class="hero-btns rv d3">
+          <button class="btn-p" onclick="showPage('projects')">View Projects →</button>
+          <button class="btn-s" onclick="showPage('reachbot')">ReachBot ↗</button>
+        </div>
+        <div class="hero-stats rv d4">
+          <div><div class="stat-n">6+</div><div class="stat-l">Years Robotics</div></div>
+          <div><div class="stat-n">3×</div><div class="stat-l">VEX Awards</div></div>
+          <div><div class="stat-n">150mi</div><div class="stat-l">Philmont Trek</div></div>
+          <div><div class="stat-n">$250</div><div class="stat-l">ReachBot Budget</div></div>
+        </div>
+      </div>
+      <div class="rv d2">
+        <div class="id-card">
+          <div class="id-card-top">
+            <div class="id-label">Profile // Class of 2028</div>
+            <div class="id-name">Ansh Jaitly</div>
+            <div class="id-sub">Dougherty Valley HS · San Ramon, CA</div>
+          </div>
+          <div class="id-mid">
+            <span class="tag tag-a">VEX V5 Leader</span>
+            <span class="tag tag-a">VEX AI Worlds</span>
+            <span class="tag tag-b">AI / ML</span>
+            <span class="tag tag-c">ReachBot P1</span>
+          </div>
+          <div class="id-rows">
+            <div class="id-row">GPA (Weighted)<span>3.83</span></div>
+            <div class="id-row">VEX Team<span>3303J + 3303X</span></div>
+            <div class="id-row">States<span>2× Qualified</span></div>
+            <div class="id-row">Nationals<span>Qualified 25–26</span></div>
+            <div class="id-row">VEX AI Worlds<span>June 12–14, UC Berkeley</span></div>
+            <div class="id-row">Current Project<span>ReachBot</span></div>
+            <div class="id-row">Scout Rank<span>Life Scout → Eagle</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">About</div>
+    <h2 class="h2 rv">Builder by nature,<br>leader by choice.</h2>
+    <div class="about-grid">
+      <div>
+        <p class="body-text rv">I'm a sophomore at Dougherty Valley High School in San Ramon. Since building my first robot from metal parts and a Raspberry Pi during the pandemic in 5th grade, I've been driven by one question: <strong>how do machines learn to move through the world?</strong></p><br>
+        <p class="body-text rv d1">I lead <strong>VEX Robotics Team 3303J</strong> for over six years — designing, CAD-modeling, building, and programming. This season: <strong>States, Nationals, and VEX AI Worlds</strong> (June 12–14, UC Berkeley) as part of Team 3303X.</p><br>
+        <p class="body-text rv d2">Beyond robotics, I care about people. I lead the alcohol-awareness team at <strong>CourAGE</strong>, Contra Costa County's youth addiction prevention program — motivated by losing my grandfather to tobacco. I'm a Life Scout working toward Eagle and a first-generation Indian-American.</p><br>
+        <p class="body-text rv d3">North star: <strong>build robots that help humanity live on other planets.</strong></p>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.5rem;" class="rv d4">
+          <span class="tag tag-a">VEX Robotics</span><span class="tag tag-a">AI / ML</span>
+          <span class="tag tag-b">CAD Design</span><span class="tag tag-b">C++ / Python</span>
+          <span class="tag">Boy Scouts</span><span class="tag">CourAGE</span>
+          <span class="tag">Aerospace</span><span class="tag">Water Polo</span>
+        </div>
+      </div>
+      <div class="about-cards">
+        <div class="info-card rv"><div class="info-card-label">School</div><div class="info-card-value">Dougherty Valley High School</div><div class="info-card-sub">Sophomore · Expected Graduation 2028</div></div>
+        <div class="info-card rv d1"><div class="info-card-label">GPA</div><div class="info-card-value">3.83 Weighted / 3.52 Unweighted</div><div class="info-card-sub">AP Calculus AB · AP CSA · Honors Physics</div></div>
+        <div class="info-card rv d2"><div class="info-card-label">VEX Robotics</div><div class="info-card-value">Team 3303J (Leader) + Team 3303X</div><div class="info-card-sub">V5 States + Nationals · AI Worlds 2026</div></div>
+        <div class="info-card rv d3"><div class="info-card-label">VEX AI Worlds</div><div class="info-card-value">June 12–14, 2026 — UC Berkeley</div><div class="info-card-sub">Team 3303X · Highest VEX level globally</div></div>
+        <div class="info-card rv d4"><div class="info-card-label">Current Build</div><div class="info-card-value">ReachBot — Phase 1 In Fabrication</div><div class="info-card-sub">Voice-controlled wheelchair arm · Sub-$300</div></div>
+      </div>
+    </div>
+
+    <!-- DIAGRAM: Skills Radar -->
+    <div class="diagram-wrap rv" style="margin-top:3rem;">
+      <div class="diagram-title">Skills Overview — Radar</div>
+      <svg class="radar-svg" viewBox="0 0 340 300" id="radarSvg"></svg>
+    </div>
+  </section></div>
+
+  <div class="divider"></div>
+
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Why I Build</div>
+    <p class="rv" style="font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(1.3rem,2.5vw,2rem);line-height:1.55;font-weight:400;max-width:800px;margin-bottom:2.5rem;">"Build robots that help <span style="color:var(--accent)">humanity reach further</span> — in space, in healthcare, and in communities technology has left behind."</p>
+    <div class="mission-grid rv">
+      <div class="mission-card"><div class="mission-tag">ReachBot · Independence for Seniors</div><p class="body-text">After six years building robots to win trophies, I started thinking about who robots actually serve. ReachBot is my answer: a sub-$300 voice-controlled arm for seniors. Real engineering, real fabrication — not a concept.</p></div>
+      <div class="mission-card"><div class="mission-tag">AI for Healthcare Equity</div><p class="body-text">My grandfather died from tobacco-induced throat cancer. That drives my work at CourAGE and my proposal for AI-powered early detection of substance abuse disorders, prioritized for underserved communities.</p></div>
+      <div class="mission-card"><div class="mission-tag">Aerospace + Robotics</div><p class="body-text">Kennedy Space Center crystallized it: Mars rovers prove robots can go where humans can't. My goal is designing robots for the Artemis generation. VEX is the foundation. Planetary exploration is the destination.</p></div>
+      <div class="mission-card"><div class="mission-tag">Teaching as Engineering</div><p class="body-text">As 3303J leader I never just solve problems — I teach others to solve them. Whether explaining PID to teammates or mentoring VEX IQ kids, real understanding means explaining the why, not just the how.</p></div>
+    </div>
+  </section></div>
+  <footer><span class="foot">Ansh Jaitly © 2026</span><span class="foot">DVHS · San Ramon · Class of 2028</span><span class="foot"><a href="https://www.linkedin.com/in/anshjaitly/" target="_blank">LinkedIn ↗</a></span></footer>
+</div>
+
+<!-- ══════════ PROJECTS ══════════ -->
+<div id="p-projects" class="page">
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Work</div>
+    <h2 class="h2 rv">Projects</h2>
+
+    <!-- DIAGRAM: VEX Journey Timeline -->
+    <div class="diagram-wrap rv" style="margin-bottom:3rem;">
+      <div class="diagram-title">VEX Robotics Journey — Timeline</div>
+      <svg class="tl-svg" viewBox="0 0 1100 120" id="tlSvg" style="min-height:120px;"></svg>
+    </div>
+
+    <div class="proj-grid">
+      <div class="proj-card featured rv">
+        <div class="proj-icon">🤖</div>
+        <div class="proj-type">VEX Robotics · 6 Years · Competition</div>
+        <div class="proj-title">VEX V5 Team 3303J — S-Shape Robot</div>
+        <p class="proj-desc">Led the full engineering cycle: CAD-designed entire robot in Onshape (S-shaped intake, outtake, drivetrain, frame). Built custom odometry with dual rotational sensors for precise autonomous positioning. Programmed C++ match + skills autonomous, color sensor for dynamic object logic. <strong>States 2023–24 + 2025–26 · VEX V5 Nationals Open 2025–26.</strong></p>
+        <div class="proj-tags"><span class="tag tag-a">C++</span><span class="tag tag-a">Onshape CAD</span><span class="tag tag-a">Odometry</span><span class="tag tag-a">PID Control</span><span class="tag">States 2×</span><span class="tag">Nationals</span></div>
+      </div>
+      <div class="proj-card rv d1">
+        <div class="proj-icon">🧠</div>
+        <div class="proj-type">VEX AI · Worlds 2026</div>
+        <div class="proj-title">Team 3303X — VEX AI Worlds</div>
+        <p class="proj-desc">Joined Team 3303X for VEX AI competition — combining robotics with autonomous AI. Qualified for the <strong>2026 VEX AI World Championship</strong>, June 12–14 at UC Berkeley. Highest level of VEX competition globally.</p>
+        <div class="proj-tags"><span class="tag tag-a">VEX AI</span><span class="tag tag-b">Autonomous AI</span><span class="tag tag-a">Worlds 2026</span></div>
+        <div style="margin-top:.8rem;font-size:.62rem;letter-spacing:.1em;color:var(--accent);">📍 UC Berkeley · June 12–14, 2026</div>
+      </div>
+      <div class="proj-card rv d2">
+        <div class="proj-icon">🦾</div>
+        <div class="proj-type">Hardware · Community · Phase 1 Active</div>
+        <div class="proj-title">ReachBot — Wheelchair Arm</div>
+        <p class="proj-desc">Voice-controlled robotic arm for seniors. 4 design iterations → ORCA Hand mod. 17 motors → 1 servo, $2,200 → $90. Phase 1 gripper in fabrication. Full AI + voice Phase 3.</p>
+        <div class="proj-tags"><span class="tag tag-c">Python</span><span class="tag tag-c">OpenCV</span><span class="tag tag-c">Whisper API</span><span class="tag tag-a">Onshape</span></div>
+        <button class="proj-link" onclick="showPage('reachbot')">Full ReachBot Page →</button>
+      </div>
+      <div class="proj-card rv">
+        <div class="proj-icon">👁️</div>
+        <div class="proj-type">AI · Computer Vision · Inspirit AI</div>
+        <div class="proj-title">YOLO Object Detection</div>
+        <p class="proj-desc">Implemented YOLO at Inspirit AI to detect and box objects in video frames. Extended to full video. Explored CT scan, X-ray, MRI applications for medical anomaly detection.</p>
+        <div class="proj-tags"><span class="tag tag-b">Python</span><span class="tag tag-b">YOLO</span><span class="tag tag-b">CNNs</span></div>
+      </div>
+      <div class="proj-card rv d1">
+        <div class="proj-icon">💊</div>
+        <div class="proj-type">FBLA · Product Design · 1st Place</div>
+        <div class="proj-title">Smart Pill Dispenser</div>
+        <p class="proj-desc">Fingerprint-controlled Smart Pill Dispenser for dementia patients. Biometric auth + doctor app scheduling + alarm system. <strong>1st place</strong> DVHS FBLA Social Enterprise Startup.</p>
+        <div class="proj-tags"><span class="tag">Product Design</span><span class="tag">Biometrics</span></div>
+      </div>
+      <div class="proj-card rv d2">
+        <div class="proj-icon">🧠</div>
+        <div class="proj-type">AI · Healthcare · AIMI</div>
+        <div class="proj-title">AI Addiction Diagnostic System</div>
+        <p class="proj-desc">CNN + behavioral pattern system to detect substance abuse disorders early — analyzing medical records, ER visits, pharmacy refills. Presented to AIMI Summer Research Internship.</p>
+        <div class="proj-tags"><span class="tag tag-b">CNNs</span><span class="tag tag-b">Healthcare AI</span></div>
+      </div>
+      <div class="proj-card rv">
+        <div class="proj-icon">🎮</div>
+        <div class="proj-type">Web Dev · 7th Grade</div>
+        <div class="proj-title">Tower Defense Game</div>
+        <p class="proj-desc">Built a browser tower-defense game in HTML/CSS showcased school-wide at Friday Show. Led to becoming CS Teaching Assistant in 8th grade.</p>
+        <div class="proj-tags"><span class="tag tag-a">HTML</span><span class="tag tag-a">CSS</span><span class="tag tag-a">JS</span></div>
+      </div>
+      <div class="proj-card rv d1" style="grid-column:span 2;">
+        <div class="proj-icon">📡</div>
+        <div class="proj-type">Community · Leadership · Paid Internship</div>
+        <div class="proj-title">CourAGE — Addiction Prevention Program</div>
+        <p class="proj-desc">Lead the alcohol-awareness squad for Contra Costa County's youth advocacy program. Present to parents, guardians, and high schoolers. Presented at UC Berkeley TTT Conference + Contra Costa County Board of Education (April 15, 2026). Motivated by losing my grandfather to tobacco-induced throat cancer.</p>
+        <div class="proj-tags"><span class="tag tag-c">Youth Advocacy</span><span class="tag tag-c">Public Health</span><span class="tag tag-c">Leadership</span></div>
+      </div>
+    </div>
+  </section></div>
+  <footer><span class="foot">Ansh Jaitly © 2026</span><span class="foot">DVHS · San Ramon, CA</span></footer>
+</div>
+
+<!-- ══════════ REACHBOT ══════════ -->
+<div id="p-reachbot" class="page">
+  <div class="wrap"><section class="rb-hero">
+    <div>
+      <div class="rb-badge">Phase 01 Active — Gripper In Fabrication</div>
+      <h1 class="hero-name rv">Reach<br><em>Bot</em></h1>
+      <p class="hero-sub rv d1" style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:400;color:var(--muted);margin-top:1rem;max-width:560px;line-height:1.7;">A <strong style="color:var(--text)">voice-controlled, wheelchair-mounted robotic arm</strong> that lets seniors retrieve dropped objects independently. No caregiver. Under $300.</p>
+      <div class="hero-btns rv d2" style="margin-top:1.5rem;">
+        <a href="https://reachbot-arm.netlify.app" target="_blank" class="btn-p">↗ reachbot-arm.netlify.app</a>
+        <a href="https://reachbot-arm.netlify.app" target="_blank" class="btn-s">Engineering Notebook ↗</a>
+      </div>
+    </div>
+  </section></div>
+  <div class="divider"></div>
+
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">The Problem</div>
+    <h2 class="h2 rv">Why this matters.</h2>
+
+    <!-- DIAGRAM: Cost comparison bar chart -->
+    <div class="diagram-wrap rv" style="margin-bottom:2rem;">
+      <div class="diagram-title">Cost Comparison — Existing Solutions vs ReachBot</div>
+      <svg class="bar-svg" viewBox="0 0 900 180" id="barSvg"></svg>
+    </div>
+
+    <div class="rb-grid3 rv">
+      <div class="pstat"><div class="pstat-n">43K</div><div class="pstat-l">Seniors died from preventable falls in 2024</div><div class="pstat-s">CDC Older Adult Falls Data</div></div>
+      <div class="pstat"><div class="pstat-n">$80B</div><div class="pstat-l">Annual healthcare cost of non-fatal senior falls</div><div class="pstat-s">CDC Facts About Falls, 2020</div></div>
+      <div class="pstat"><div class="pstat-n">$250</div><div class="pstat-l">ReachBot complete build cost — all phases</div><div class="pstat-s">Internal BOM calculation</div></div>
+      <div class="pstat"><div class="pstat-n">$45K+</div><div class="pstat-l">Kinova Jaco — nearest existing assistive arm</div><div class="pstat-s">Medical device market 2024</div></div>
+      <div class="pstat"><div class="pstat-n">94%</div><div class="pstat-l">Would use assistive arm if under $300</div><div class="pstat-s">Planned field research · May 2026</div></div>
+      <div class="pstat"><div class="pstat-n">5</div><div class="pstat-l">San Ramon senior facilities for user research</div><div class="pstat-s">Belmont Village, Discovery Commons + 3</div></div>
+    </div>
+  </section></div>
+  <div class="divider"></div>
+
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Engineering</div>
+    <h2 class="h2 rv">Design & Calculations</h2>
+
+    <!-- DIAGRAM: Phase roadmap donut -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;" class="rv">
+      <div class="diagram-wrap">
+        <div class="diagram-title">Build Phase Roadmap</div>
+        <svg class="donut-svg" viewBox="0 0 260 220" id="donutSvg"></svg>
+      </div>
+      <div class="diagram-wrap">
+        <div class="diagram-title">Design Iteration Flow</div>
+        <svg viewBox="0 0 400 200" style="width:100%;display:block;" id="flowSvg"></svg>
+      </div>
+    </div>
+
+    <div class="rb-grid2">
+      <div>
+        <div class="eyebrow rv" style="margin-bottom:1rem;">4 Design Iterations</div>
+        <div class="iter-wrap rv">
+          <div class="iter-row"><div class="iter-l"><div class="iter-dot done"></div><div class="iter-line"></div></div><div class="iter-b"><div class="iter-when">March 2026 · Iter 01</div><div class="iter-title">Lego Hand — Dual Paddle</div><div class="iter-desc">Flat PLA paddles, single MG996R, 32–200mm span. Too industrial for senior care context.</div><div class="iter-status s-done">Abandoned — poor compliance on irregular objects</div></div></div>
+          <div class="iter-row"><div class="iter-l"><div class="iter-dot done"></div><div class="iter-line"></div></div><div class="iter-b"><div class="iter-when">March 2026 · Iter 02</div><div class="iter-title">Claw — Fin Ray Geometry</div><div class="iter-desc">Curved surfaces for better conforming. Still looked threatening to elderly users.</div><div class="iter-status s-done">Designed, not built — backup retained</div></div></div>
+          <div class="iter-row"><div class="iter-l"><div class="iter-dot done"></div><div class="iter-line"></div></div><div class="iter-b"><div class="iter-when">April 2026 · Iter 03</div><div class="iter-title">Octopus Arms — Soft Robotics</div><div class="iter-desc">6 TPU tentacles, pneumatic actuation. Fails on flat surfaces; needs extruder unavailable at school.</div><div class="iter-status s-done">Rejected — incompatible with school printer</div></div></div>
+          <div class="iter-row"><div class="iter-l"><div class="iter-dot now"></div></div><div class="iter-b"><div class="iter-when">April 2026 · Iter 04 — Current</div><div class="iter-title">ORCA Hand Mod — 5-Digit Human Hand</div><div class="iter-desc">ETH Zurich ORCA v1 CAD, modified to 1 MG996R via unified tendon. 17 motors → 1 servo. $2,200 → $90.</div><div class="iter-status s-now">● Phase 1 in active fabrication</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow rv" style="margin-bottom:1rem;">Engineering Calculations</div>
+        <div class="rv">
+          <div class="calc"><div class="calc-l">Calc 01 — Shoulder Torque</div><div class="calc-f">T = F × d = (0.25 kg × 9.81) × 0.76m
+= 1.86 N·m = 19.0 kg·cm
+MG996R: 11 kg·cm @ 6V ✓ (gripper)
+Phase 2: DS3225 @ 25 kg·cm</div><div class="calc-r">Adequate for gripper; Phase 2 needs upgrade</div></div>
+          <div class="calc"><div class="calc-l">Calc 02 — Arm Length</div><div class="calc-f">arm ≥ 650mm + 110mm = 760mm</div><div class="calc-r">Final arm tube: 760mm (2.5ft)</div></div>
+          <div class="calc"><div class="calc-l">Calc 03 — Safety Factor</div><div class="calc-f">Al 6061-T6 yield: 276 MPa
+σ = 1.86 N·m / 560mm³ ≈ 3.3 MPa</div><div class="calc-r">Safety factor &gt; 80× — well within yield</div></div>
+          <div class="calc"><div class="calc-l">Calc 04 — Floor Reach</div><div class="calc-f">reach = 760mm × sin(52°) = 599mm
+clearance = 720 − 599 = 121mm ✓</div><div class="calc-r">Gripper reaches floor with 121mm margin</div></div>
+        </div>
+      </div>
+    </div>
+  </section></div>
+  <div class="divider"></div>
+
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Materials & Risk</div>
+    <h2 class="h2 rv">BOM + Risk Analysis</h2>
+    <div class="rb-grid2">
+      <div class="rv">
+        <div class="eyebrow" style="margin-bottom:1rem;">Phase 1 BOM (~$98)</div>
+        <div class="bom">
+          <div class="bom-row bom-hdr"><div>Component</div><div>Spec</div><div style="text-align:right">Cost</div></div>
+          <div class="bom-row"><div class="bom-name">MG996R Servo</div><div class="bom-spec">11 kg·cm @ 6V</div><div class="bom-price bom-free">Owned</div></div>
+          <div class="bom-row"><div class="bom-name">Black PLA Filament 1kg</div><div class="bom-spec">0.2mm / 50% infill</div><div class="bom-price">$22</div></div>
+          <div class="bom-row"><div class="bom-name">30 lb Braided Tendon</div><div class="bom-spec">5m, Power Pro Spectra</div><div class="bom-price">$15</div></div>
+          <div class="bom-row"><div class="bom-name">2mm Steel Dowel Pins</div><div class="bom-spec">50pc pack</div><div class="bom-price">$10</div></div>
+          <div class="bom-row"><div class="bom-name">4×8×3mm Bearings</div><div class="bom-spec">20pc, 2 packs</div><div class="bom-price">$15</div></div>
+          <div class="bom-row"><div class="bom-name">PTFE Tube 0.9×1.5mm</div><div class="bom-spec">1m, tendon guides</div><div class="bom-price">$8</div></div>
+          <div class="bom-row"><div class="bom-name">M2 + M1.4 Screws</div><div class="bom-spec">Mixed assortment</div><div class="bom-price">$20</div></div>
+          <div class="bom-row"><div class="bom-name" style="font-weight:700;color:var(--text)">Phase 1 Total</div><div></div><div class="bom-price bom-total">~$98</div></div>
+        </div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:.6rem;text-align:right;">P2 ~$64 · P3 ~$83 · Prints FREE · All-in ~$250</div>
+      </div>
+      <div class="rv d1">
+        <div class="eyebrow" style="margin-bottom:1rem;">Risk Register</div>
+        <div class="risk-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="risk"><div class="risk-l">Structural</div><div class="risk-t">Paddle Snaps</div><div class="risk-f">Increase infill to 60%, reprint vertically.</div></div>
+          <div class="risk"><div class="risk-l">Mechanical</div><div class="risk-t">Tendon Snap</div><div class="risk-f">30 lb braided + redundant knot at anchor.</div></div>
+          <div class="risk"><div class="risk-l">Safety</div><div class="risk-t">Pinch Injury</div><div class="risk-f">Compliant ORCA fingers + silicone tips.</div></div>
+          <div class="risk"><div class="risk-l">Control</div><div class="risk-t">Voice Misrecognition</div><div class="risk-f">Confirmation prompt + manual override.</div></div>
+          <div class="risk"><div class="risk-l">Mounting</div><div class="risk-t">Clamp Loosening</div><div class="risk-f">Locknut + threadlocker; pre-flight check.</div></div>
+          <div class="risk"><div class="risk-l">Power</div><div class="risk-t">Mid-Grasp Power Loss</div><div class="risk-f">Fail-open spring return on gripper.</div></div>
+        </div>
+      </div>
+    </div>
+  </section></div>
+  <div class="divider"></div>
+
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Stack & Goals</div>
+    <h2 class="h2 rv">Tech Stack + Competitions</h2>
+    <div class="tech-cols rv" style="margin-bottom:2.5rem;">
+      <div class="tech-blk"><div class="tech-phase">Phase 01 — Now</div><ul class="tech-list"><li>Onshape CAD</li><li>PLA 3D Printing</li><li>MG996R Servo ×1</li><li>ORCA Hand v1 (ETH)</li><li>Braided Tendon</li></ul></div>
+      <div class="tech-blk"><div class="tech-phase">Phase 02 — Build</div><ul class="tech-list"><li>NEMA 17 Stepper</li><li>A4988 Driver</li><li>760mm Al Tube</li><li>DS3225 Servos ×3</li><li>Lazy Susan Bearing</li></ul></div>
+      <div class="tech-blk"><div class="tech-phase">Phase 03 — AI</div><ul class="tech-list"><li>Raspberry Pi 4</li><li>OpenCV + YOLOv8n</li><li>Whisper API</li><li>Python + FastAPI</li><li>Inverse Kinematics</li></ul></div>
+      <div class="tech-blk"><div class="tech-phase">Phase 04 — Deploy</div><ul class="tech-list"><li>Senior Facility Tests</li><li>User Research</li><li>Research Paper</li><li>Competition Subs</li><li>GitHub MIT License</li></ul></div>
+    </div>
+    <div class="comp-grid rv">
+      <div class="comp t1"><div class="comp-tier">Tier 1 — Flagship</div><div class="comp-name">Regeneron STS</div><div class="comp-prize">$250,000 top prize</div><div class="comp-dl">Deadline: November 2026</div><div class="comp-why">User research + mech engineering + AI. Senior center interviews are a major differentiator.</div></div>
+      <div class="comp t1"><div class="comp-tier">Tier 1 — Flagship</div><div class="comp-name">Conrad Challenge</div><div class="comp-prize">$10,000 + NASA recognition</div><div class="comp-dl">Deadline: January 2027</div><div class="comp-why">Health & Nutrition category. Senior independence matches Conrad's mission.</div></div>
+      <div class="comp t2"><div class="comp-tier">Tier 2</div><div class="comp-name">Congressional App</div><div class="comp-prize">Display in US Capitol</div><div class="comp-dl">Deadline: November 2026</div><div class="comp-why">Whisper voice + OpenCV AI layer targets software-heavy judging.</div></div>
+      <div class="comp t2"><div class="comp-tier">Tier 2</div><div class="comp-name">Lemelson-MIT InvenTeams</div><div class="comp-prize">$10,000 per team</div><div class="comp-dl">Apply: February 2027</div><div class="comp-why">Emphasizes invention process — 4 documented iterations ideal.</div></div>
+    </div>
+  </section></div>
+  <footer><span class="foot">ReachBot by Ansh Jaitly · <a href="https://reachbot-arm.netlify.app" target="_blank">reachbot-arm.netlify.app ↗</a></span><span class="foot">Phase 01 Active</span></footer>
+</div>
+
+<!-- ══════════ AWARDS ══════════ -->
+<div id="p-awards" class="page">
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Recognition</div>
+    <h2 class="h2 rv">Awards & Achievements</h2>
+    <div class="award-grid rv">
+      <div class="award"><div class="award-ico">🏆</div><div><div class="award-name">VEX V5 Excellence Award</div><div class="award-org">Team 3303J — Most prestigious VEX award</div></div><div class="award-yr">25–26</div></div>
+      <div class="award"><div class="award-ico">🌍</div><div><div class="award-name">VEX AI World Championship</div><div class="award-org">Team 3303X · UC Berkeley · June 12–14, 2026</div></div><div class="award-yr">25–26</div></div>
+      <div class="award"><div class="award-ico">🎯</div><div><div class="award-name">VEX V5 Nationals Open Qualifier</div><div class="award-org">Team 3303J · US Open</div></div><div class="award-yr">25–26</div></div>
+      <div class="award"><div class="award-ico">⚖️</div><div><div class="award-name">VEX V5 Judges Award ×2</div><div class="award-org">Team 3303J</div></div><div class="award-yr">23–24, 24–25</div></div>
+      <div class="award"><div class="award-ico">🏅</div><div><div class="award-name">VEX V5 States Qualifier ×2</div><div class="award-org">Team 3303J</div></div><div class="award-yr">23–24, 25–26</div></div>
+      <div class="award"><div class="award-ico">🎓</div><div><div class="award-name">President's Award — Outstanding Academic Excellence</div><div class="award-org">United States</div></div><div class="award-yr">2024</div></div>
+      <div class="award"><div class="award-ico">💼</div><div><div class="award-name">1st Place — FBLA Social Enterprise Startup</div><div class="award-org">Smart Pill Dispenser · DVHS</div></div><div class="award-yr">2024</div></div>
+      <div class="award"><div class="award-ico">⛰️</div><div><div class="award-name">Philmont Scout Ranch — Navigator</div><div class="award-org">150-mi trek · Mt Baldy 12,441ft · 12 days</div></div><div class="award-yr">2024</div></div>
+      <div class="award"><div class="award-ico">🤿</div><div><div class="award-name">Sea Base High Adventure</div><div class="award-org">Boy Scouts of America · Florida Keys</div></div><div class="award-yr">2025</div></div>
+      <div class="award"><div class="award-ico">🧭</div><div><div class="award-name">NYLT Staff Member</div><div class="award-org">National Youth Leadership Training</div></div><div class="award-yr">2025</div></div>
+      <div class="award"><div class="award-ico">🏊</div><div><div class="award-name">JV Water Polo — DVHS</div><div class="award-org">Junior Varsity Award for Commitment</div></div><div class="award-yr">2024</div></div>
+      <div class="award"><div class="award-ico">📜</div><div><div class="award-name">CJSF — Promoted with Honors</div><div class="award-org">California Junior Scholastic Federation</div></div><div class="award-yr">Middle School</div></div>
+    </div>
+  </section></div>
+  <footer><span class="foot">Ansh Jaitly © 2026</span><span class="foot">DVHS · San Ramon, CA</span></footer>
+</div>
+
+<!-- ══════════ SKILLS ══════════ -->
+<div id="p-skills" class="page">
+  <div class="wrap"><section class="sec">
+    <div class="eyebrow rv">Capabilities</div>
+    <h2 class="h2 rv">Skills & Tools</h2>
+    <div class="skill-grid rv">
+      <div class="skill-blk"><div class="skill-ico">⚙️</div><div class="skill-title">Robotics & Hardware</div><ul class="skill-list"><li>VEX V5 + VEX AI (6 yrs)</li><li>Onshape CAD</li><li>PLA 3D Printing</li><li>Servo + Stepper Control</li><li>Tendon Actuation (ORCA)</li><li>Odometry Systems</li><li>Raspberry Pi GPIO</li></ul></div>
+      <div class="skill-blk"><div class="skill-ico">💻</div><div class="skill-title">Programming</div><ul class="skill-list"><li>C++ (robotics, 6 yrs)</li><li>Python (AI + control)</li><li>Java (AP CSA)</li><li>HTML / CSS</li><li>FastAPI</li></ul></div>
+      <div class="skill-blk"><div class="skill-ico">🧠</div><div class="skill-title">AI & Computer Vision</div><ul class="skill-list"><li>YOLO (v5, v8)</li><li>OpenCV 4.x</li><li>CNNs / Neural Networks</li><li>Whisper API (voice)</li><li>Inspirit AI Certified</li></ul></div>
+      <div class="skill-blk"><div class="skill-ico">📐</div><div class="skill-title">Engineering & Science</div><ul class="skill-list"><li>Mechanical Design</li><li>Inverse Kinematics</li><li>Torque + Stress Calcs</li><li>Risk Analysis / FMEA</li><li>AP Calculus AB</li><li>Honors Physics</li></ul></div>
+    </div>
+
+    <div style="margin-top:3rem;">
+      <div class="eyebrow rv" style="margin-bottom:1.5rem;">LinkedIn</div>
+      <h2 class="h2 rv" style="font-size:1.8rem;">Recent Updates</h2>
+      <p class="body-text rv" style="margin-bottom:2rem;">Follow along at <a href="https://www.linkedin.com/in/anshjaitly/" target="_blank" style="color:var(--accent);text-decoration:none;">linkedin.com/in/anshjaitly ↗</a></p>
+      <div class="posts-grid rv">
+        <div class="post"><div class="post-hdr"><div class="post-av">AJ</div><div><div class="post-author">Ansh Jaitly</div><div class="post-date">April 2026</div></div></div><p class="post-body"><strong>ReachBot Phase 1 in fabrication!</strong> After 4 design iterations — Lego hand → claw → soft tentacles → ORCA human hand — settling on ETH Zurich ORCA Hand v1 modified. 17 motors → 1 MG996R servo. $2,200 → ~$90 hand cost.</p><a href="https://www.linkedin.com/in/anshjaitly/" target="_blank" class="post-link">View on LinkedIn ↗</a></div>
+        <div class="post"><div class="post-hdr"><div class="post-av">AJ</div><div><div class="post-author">Ansh Jaitly</div><div class="post-date">2026</div></div></div><p class="post-body"><strong>VEX AI Worlds — we're going!</strong> Team 3303X qualified for the 2026 VEX AI World Championship — June 12–14 at UC Berkeley. Team 3303J also earned the Excellence Award, States + VEX V5 Nationals Open this season.</p><a href="https://www.linkedin.com/in/anshjaitly/" target="_blank" class="post-link">View on LinkedIn ↗</a></div>
+        <div class="post"><div class="post-hdr"><div class="post-av">AJ</div><div><div class="post-author">Ansh Jaitly</div><div class="post-date">April 2026</div></div></div><p class="post-body">Speaking at the <strong>Contra Costa County Board of Education</strong> on April 15 as part of CourAGE's youth addiction prevention initiative. Also presented at UC Berkeley TTT Conference.</p><a href="https://www.linkedin.com/in/anshjaitly/" target="_blank" class="post-link">View on LinkedIn ↗</a></div>
+      </div>
+    </div>
+  </section></div>
+  <footer><span class="foot">Ansh Jaitly © 2026</span><span class="foot">DVHS · San Ramon, CA</span></footer>
+</div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div id="p-contact" class="page">
+  <div class="wrap">
+    <div class="contact-wrap">
+      <div class="eyebrow rv" style="justify-content:center;">Contact</div>
+      <h2 class="h2 rv" style="text-align:center;margin-bottom:1.5rem;">Let's build something.</h2>
+      <a href="mailto:jaitly.ansh.1@gmail.com" class="contact-email rv">jaitly.ansh.1@gmail.com</a>
+      <div class="contact-links rv d1">
+        <a href="https://www.linkedin.com/in/anshjaitly/" target="_blank" class="btn-s">LinkedIn ↗</a>
+        <a href="https://reachbot-arm.netlify.app" target="_blank" class="btn-s">ReachBot ↗</a>
+        <button class="btn-s" onclick="showPage('projects')">Projects</button>
+        <button class="btn-s" onclick="showPage('awards')">Awards</button>
+      </div>
+    </div>
+  </div>
+  <footer><span class="foot">Ansh Jaitly © 2026</span><span class="foot">DVHS · San Ramon · Class of 2028</span><span class="foot" style="color:var(--accent);">Phase 01 Active</span></footer>
+</div>
+
+</div><!-- /shell -->
+
+<script>
+/* ── Cursor ── */
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function tick(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick);})();
+
+/* ── Theme toggle ── */
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('themeBtn').textContent=isDark?'🌙':'☀️';
+  drawAll();
+  redrawCurrentBg();
+}
+
+/* ── Page switching ── */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  const page=document.getElementById('p-'+id);
+  if(page){page.classList.add('on');window.scrollTo({top:0,behavior:'instant'});
+    setTimeout(()=>{page.querySelectorAll('.rv:not(.in)').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),i*55));},30);
+  }
+  const labels={home:'Home',projects:'Projects',reachbot:'ReachBot',awards:'Awards',skills:'Skills',contact:'Contact'};
+  document.querySelectorAll('.ptab').forEach(t=>{if(t.textContent.trim()===labels[id])t.classList.add('on');});
+  drawBgScene(id);
+  setTimeout(drawAll,50);
+}
+
+/* ── Scroll reveal ── */
+const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('in'),i*60);});},{threshold:.07});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+/* ══════════════════════════════════════
+   DIAGRAMS
+══════════════════════════════════════ */
+function getAccent(){return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();}
+function getText(){return getComputedStyle(document.documentElement).getPropertyValue('--text').trim();}
+function getMuted(){return getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();}
+function getSurface(){return getComputedStyle(document.documentElement).getPropertyValue('--surface').trim();}
+function getBorder(){return getComputedStyle(document.documentElement).getPropertyValue('--border2').trim();}
+function getAccent2(){return getComputedStyle(document.documentElement).getPropertyValue('--accent2').trim();}
+function getAccent3(){return getComputedStyle(document.documentElement).getPropertyValue('--accent3').trim();}
+
+/* RADAR */
+function drawRadar(){
+  const svg=document.getElementById('radarSvg');if(!svg)return;
+  const acc=getAccent(),txt=getText(),mut=getMuted();
+  const cx=170,cy=155,R=110;
+  const labels=['C++\nRobotics','CAD\nDesign','AI / ML','Python','Leadership','Physics'];
+  const vals=[0.92,0.85,0.78,0.72,0.9,0.8];
+  const n=labels.length;
+  let html='';
+  // rings
+  for(let r=1;r<=4;r++){
+    let pts=labels.map((_,i)=>{const a=Math.PI*2/n*i-Math.PI/2;const rr=R*r/4;return `${cx+rr*Math.cos(a)},${cy+rr*Math.sin(a)}`;}).join(' ');
+    html+=`<polygon points="${pts}" fill="none" stroke="${mut}" stroke-width="0.5" opacity="0.3"/>`;
+  }
+  // axes
+  labels.forEach((_,i)=>{const a=Math.PI*2/n*i-Math.PI/2;html+=`<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}" stroke="${mut}" stroke-width="0.5" opacity="0.3"/>`;});
+  // data polygon
+  let pts=vals.map((v,i)=>{const a=Math.PI*2/n*i-Math.PI/2;return `${cx+R*v*Math.cos(a)},${cy+R*v*Math.sin(a)}`;}).join(' ');
+  html+=`<polygon points="${pts}" fill="${acc}" fill-opacity="0.15" stroke="${acc}" stroke-width="2"/>`;
+  // dots
+  vals.forEach((v,i)=>{const a=Math.PI*2/n*i-Math.PI/2;html+=`<circle cx="${cx+R*v*Math.cos(a)}" cy="${cy+R*v*Math.sin(a)}" r="4" fill="${acc}"/>`;});
+  // labels
+  labels.forEach((lbl,i)=>{
+    const a=Math.PI*2/n*i-Math.PI/2;const lx=cx+(R+22)*Math.cos(a);const ly=cy+(R+22)*Math.sin(a);
+    const lines=lbl.split('\n');
+    html+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="${txt}" opacity="0.8">`;
+    lines.forEach((l,j)=>html+=`<tspan x="${lx}" dy="${j===0?-4*lines.length/2+4:12}">${l}</tspan>`);
+    html+='</text>';
+  });
+  svg.innerHTML=html;
+}
+
+/* TIMELINE */
+function drawTimeline(){
+  const svg=document.getElementById('tlSvg');if(!svg)return;
+  const acc=getAccent(),txt=getText(),mut=getMuted(),acc2=getAccent2(),acc3=getAccent3();
+  const events=[
+    {y:2019,label:'VEX IQ\nBeginner',color:mut},
+    {y:2021,label:'VEX V5\nJoined',color:acc},
+    {y:2022,label:'Team Leader\n3303J',color:acc},
+    {y:2023,label:'States\nQualified',color:acc2},
+    {y:2024,label:'Inspirit AI\nYOLO Project',color:acc3},
+    {y:2025,label:'States Again\nJudges Award',color:acc},
+    {y:2026,label:'Nationals +\nVEX AI Worlds',color:acc},
+  ];
+  const n=events.length,w=1100,pad=80,step=(w-pad*2)/(n-1),cy=60;
+  let html='';
+  // line
+  html+=`<line x1="${pad}" y1="${cy}" x2="${w-pad}" y2="${cy}" stroke="${mut}" stroke-width="1.5" opacity="0.3"/>`;
+  events.forEach((e,i)=>{
+    const x=pad+i*step;const isLast=(i===n-1);
+    html+=`<circle cx="${x}" cy="${cy}" r="${isLast?8:5}" fill="${isLast?e.color:'none'}" stroke="${e.color}" stroke-width="2"/>`;
+    if(isLast)html+=`<circle cx="${x}" cy="${cy}" r="12" fill="none" stroke="${e.color}" stroke-width="1" opacity="0.4"/>`;
+    const above=i%2===0;const ty=above?cy-22:cy+22;
+    const lines=e.label.split('\n');
+    html+=`<line x1="${x}" y1="${cy}" x2="${x}" y2="${ty+(above?-6:6)}" stroke="${e.color}" stroke-width="1" opacity="0.4"/>`;
+    html+=`<text x="${x}" text-anchor="middle" font-size="9" fill="${e.color}">`;
+    lines.forEach((l,j)=>html+=`<tspan x="${x}" y="${ty+(above?-8:8)+(j*12)}">${l}</tspan>`);
+    html+='</text>';
+    html+=`<text x="${x}" y="${cy+75}" text-anchor="middle" font-size="8" fill="${mut}" opacity="0.6">${e.y}</text>`;
+  });
+  svg.innerHTML=html;
+}
+
+/* DONUT — phases */
+function drawDonut(){
+  const svg=document.getElementById('donutSvg');if(!svg)return;
+  const acc=getAccent(),txt=getText(),mut=getMuted(),acc2=getAccent2();
+  const cx=130,cy=110,R=80,r=52;
+  const phases=[
+    {label:'P1 Gripper',pct:.28,color:acc},
+    {label:'P2 Full Arm',pct:.28,color:acc2},
+    {label:'P3 AI',pct:.22,color:getAccent3()},
+    {label:'P4 Deploy',pct:.22,color:mut},
+  ];
+  let html='',start=0;
+  phases.forEach(p=>{
+    const end=start+p.pct*Math.PI*2;
+    const x1=cx+R*Math.cos(start-Math.PI/2),y1=cy+R*Math.sin(start-Math.PI/2);
+    const x2=cx+R*Math.cos(end-Math.PI/2),y2=cy+R*Math.sin(end-Math.PI/2);
+    const lf=p.pct>.5?1:0;
+    const ix=cx+r*Math.cos(end-Math.PI/2),iy=cy+r*Math.sin(end-Math.PI/2);
+    const ix1=cx+r*Math.cos(start-Math.PI/2),iy1=cy+r*Math.sin(start-Math.PI/2);
+    html+=`<path d="M${x1},${y1} A${R},${R} 0 ${lf},1 ${x2},${y2} L${ix},${iy} A${r},${r} 0 ${lf},0 ${ix1},${iy1} Z" fill="${p.color}" opacity="0.85" stroke="${getSurface()}" stroke-width="2"/>`;
+    const ma=start+(end-start)/2-Math.PI/2;const lx=cx+(R+16)*Math.cos(ma),ly=cy+(R+16)*Math.sin(ma);
+    html+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="${txt}" opacity="0.8">${p.label}</text>`;
+    start=end;
+  });
+  // center
+  html+=`<text x="${cx}" y="${cy-6}" text-anchor="middle" font-size="20" font-family="DM Serif Display,serif" fill="${acc}">4</text>`;
+  html+=`<text x="${cx}" y="${cy+10}" text-anchor="middle" font-size="8" fill="${mut}">PHASES</text>`;
+  svg.innerHTML=html;
+}
+
+/* FLOW — iteration flow */
+function drawFlow(){
+  const svg=document.getElementById('flowSvg');if(!svg)return;
+  const acc=getAccent(),txt=getText(),mut=getMuted(),acc3=getAccent3();
+  const nodes=[
+    {x:40,y:100,label:'Paddle\nHand',color:mut,done:true},
+    {x:140,y:100,label:'Fin Ray\nClaw',color:mut,done:true},
+    {x:240,y:100,label:'Soft\nTentacles',color:mut,done:true},
+    {x:340,y:100,label:'ORCA\nHand',color:acc,done:false},
+  ];
+  const r=32;
+  let html='';
+  nodes.forEach((nd,i)=>{
+    if(i<nodes.length-1){
+      html+=`<line x1="${nd.x+r}" y1="${nd.y}" x2="${nodes[i+1].x-r}" y2="${nodes[i+1].y}" stroke="${mut}" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#arr)"/>`;
+    }
+  });
+  html+=`<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="${mut}" opacity="0.5"/></marker></defs>`;
+  nodes.forEach(nd=>{
+    html+=`<circle cx="${nd.x}" cy="${nd.y}" r="${r}" fill="${nd.color}" fill-opacity="${nd.done?.15:.25}" stroke="${nd.color}" stroke-width="${nd.done?1:2}"/>`;
+    if(!nd.done)html+=`<circle cx="${nd.x}" cy="${nd.y}" r="${r+6}" fill="none" stroke="${nd.color}" stroke-width="1" opacity="0.3"/>`;
+    const lines=nd.label.split('\n');
+    html+=`<text text-anchor="middle" font-size="9" fill="${nd.done?mut:acc}">`;
+    lines.forEach((l,j)=>html+=`<tspan x="${nd.x}" y="${nd.y+(j===0?-5:7)}">${l}</tspan>`);
+    html+='</text>';
+    const status=nd.done?'✗':'✓ Active';
+    html+=`<text x="${nd.x}" y="${nd.y+r+14}" text-anchor="middle" font-size="8" fill="${nd.done?mut:acc3}">${status}</text>`;
+  });
+  svg.innerHTML=html;
+}
+
+/* BAR — cost comparison */
+function drawBar(){
+  const svg=document.getElementById('barSvg');if(!svg)return;
+  const acc=getAccent(),txt=getText(),mut=getMuted(),acc2=getAccent2();
+  const items=[
+    {label:'Kinova Jaco',val:45000,disp:'$45,000+',color:mut},
+    {label:'JACO Lite',val:18000,disp:'$18,000',color:mut},
+    {label:'Affordable\nExisting',val:3000,disp:'$3,000',color:acc2},
+    {label:'ReachBot\n(Ours)',val:250,disp:'$250',color:acc},
+  ];
+  const maxVal=45000,W=900,H=180,pad=60,barH=22,gap=14,topPad=20;
+  let html='';
+  items.forEach((it,i)=>{
+    const y=topPad+i*(barH+gap);
+    const bw=Math.max((it.val/maxVal)*(W-pad*2-120),4);
+    html+=`<rect x="${pad}" y="${y}" width="${bw}" height="${barH}" rx="4" fill="${it.color}" opacity="${it.color===acc?1:.55}"/>`;
+    const lx=pad-6;
+    const lines=it.label.split('\n');
+    html+=`<text text-anchor="end" font-size="9" fill="${txt}" opacity="0.75">`;
+    lines.forEach((l,j)=>html+=`<tspan x="${lx}" y="${y+barH/2+(j===0?-4:8)}">${l}</tspan>`);
+    html+='</text>';
+    html+=`<text x="${pad+bw+8}" y="${y+barH/2+4}" font-size="10" fill="${it.color}" font-weight="bold">${it.disp}</text>`;
+  });
+  svg.innerHTML=html;
+}
+
+function drawAll(){
+  requestAnimationFrame(()=>{drawRadar();drawTimeline();drawDonut();drawFlow();drawBar();});
+}
+
+// Init
+window.addEventListener('load',()=>{setTimeout(drawAll,100); drawBgScene('home');});
+window.addEventListener('resize',()=>{drawAll(); redrawCurrentBg();});
+
+/* ══════════════════════════════════════
+   BACKGROUND SCENES
+══════════════════════════════════════ */
+let _currentPage = 'home';
+let _activeSvg = 'a'; // which svg is visible
+
+function isDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
+
+// multiply all opacities by ~2.2x for darker/more visible scenes
+function bgColor(op){ 
+  return isDark() ? `rgba(232,255,71,${Math.min(op*2.2,1)})` : `rgba(80,100,0,${Math.min(op*2.2,1)})`; 
+}
+function bgColor2(op){ 
+  return isDark() ? `rgba(71,200,255,${Math.min(op*2.2,1)})` : `rgba(0,100,180,${Math.min(op*2.2,1)})`; 
+}
+function bgColor3(op){ 
+  return isDark() ? `rgba(255,107,71,${Math.min(op*2.2,1)})` : `rgba(200,60,0,${Math.min(op*2.2,1)})`; 
+}
+
+// Each page has a unique SVG illustration
+const scenes = {
+  home: (w,h) => {
+    let s='';
+    // ── Neural network (left side) ──
+    // 3 layers: input(5), hidden(4), output(3)
+    const layers = [
+      [{x:.1,y:.22},{x:.1,y:.35},{x:.1,y:.5},{x:.1,y:.65},{x:.1,y:.78}],
+      [{x:.28,y:.28},{x:.28,y:.42},{x:.28,y:.58},{x:.28,y:.72}],
+      [{x:.46,y:.33},{x:.46,y:.5},{x:.46,y:.67}],
+    ];
+    // connections
+    layers.forEach((layer,li)=>{
+      if(li===layers.length-1) return;
+      layer.forEach(a=>{
+        layers[li+1].forEach(b=>{
+          s+=`<line x1="${a.x*w}" y1="${a.y*h}" x2="${b.x*w}" y2="${b.y*h}" stroke="${bgColor(.13)}" stroke-width="1"/>`;
+        });
+      });
+    });
+    // nodes
+    layers.forEach((layer,li)=>{
+      layer.forEach((n,ni)=>{
+        const r = li===1 ? 7 : 5;
+        const pulse = (li===2 && ni===1); // highlight output center
+        s+=`<circle cx="${n.x*w}" cy="${n.y*h}" r="${r}" fill="${bgColor(pulse?.3:.18)}" stroke="${bgColor(pulse?.6:.3)}" stroke-width="${pulse?2:1}"/>`;
+        if(pulse) s+=`<circle cx="${n.x*w}" cy="${n.y*h}" r="${r+8}" fill="none" stroke="${bgColor(.12)}" stroke-width="1"/>`;
+      });
+    });
+    // label
+    s+=`<text x="${.1*w}" y="${.88*h}" font-family="DM Mono,monospace" font-size="9" fill="${bgColor(.25)}" letter-spacing="2">NEURAL NET</text>`;
+
+    // ── Robot arm (right side) ──
+    const joints=[{x:.82,y:.18},{x:.72,y:.35},{x:.65,y:.52},{x:.58,y:.68}];
+    // mechanical rings around shoulder
+    [100,75,50].forEach(r=>{
+      s+=`<circle cx="${joints[0].x*w}" cy="${joints[0].y*h}" r="${r}" fill="none" stroke="${bgColor(.07)}" stroke-width="1" stroke-dasharray="4,6"/>`;
+    });
+    // arm links
+    joints.forEach((_,i)=>{
+      if(i<joints.length-1){
+        s+=`<line x1="${joints[i].x*w}" y1="${joints[i].y*h}" x2="${joints[i+1].x*w}" y2="${joints[i+1].y*h}" stroke="${bgColor(.22)}" stroke-width="3" stroke-linecap="round"/>`;
+      }
+    });
+    // joint circles
+    joints.forEach((j,i)=>{
+      s+=`<circle cx="${j.x*w}" cy="${j.y*h}" r="${i===0?12:8}" fill="${bgColor(.12)}" stroke="${bgColor(.3)}" stroke-width="1.5"/>`;
+    });
+    // gripper fingers
+    const gj=joints[3];
+    [[-16,-28],[0,-32],[16,-28]].forEach(([dx,dy])=>{
+      s+=`<line x1="${gj.x*w}" y1="${gj.y*h}" x2="${gj.x*w+dx}" y2="${gj.y*h+dy}" stroke="${bgColor(.28)}" stroke-width="2.5" stroke-linecap="round"/>`;
+    });
+    s+=`<text x="${.65*w}" y="${.82*h}" font-family="DM Mono,monospace" font-size="9" fill="${bgColor(.25)}" letter-spacing="2">REACH BOT</text>`;
+
+    // ── Orbiting data particles (center) ──
+    const ocx=.57*w, ocy=.45*h;
+    [[130,.3],[95,.55],[65,.8]].forEach(([r,op],ri)=>{
+      s+=`<ellipse cx="${ocx}" cy="${ocy}" rx="${r}" ry="${r*.38}" fill="none" stroke="${bgColor(op*.5)}" stroke-width="1" stroke-dasharray="${ri===0?'5,8':ri===1?'3,5':'2,4'}"/>`;
+      // particle on each orbit
+      const a=ri*.7;
+      const px=ocx+r*Math.cos(a), py=ocy+r*.38*Math.sin(a);
+      s+=`<circle cx="${px}" cy="${py}" r="4" fill="${bgColor(op)}"/>`;
+    });
+    // center "brain" node
+    s+=`<circle cx="${ocx}" cy="${ocy}" r="18" fill="${bgColor(.1)}" stroke="${bgColor(.3)}" stroke-width="2"/>`;
+    s+=`<circle cx="${ocx}" cy="${ocy}" r="10" fill="${bgColor(.2)}" stroke="none"/>`;
+    s+=`<text x="${ocx}" y="${ocy+4}" font-family="DM Mono,monospace" font-size="8" fill="${bgColor(.7)}" text-anchor="middle">AI</text>`;
+
+    // ── Floating binary / data ──
+    [[.15,.1,'01101'],[.75,.9,'10110'],[.03,.42,'11001'],[.9,.55,'00111']].forEach(([bx,by,bits])=>{
+      s+=`<text x="${bx*w}" y="${by*h}" font-family="DM Mono,monospace" font-size="10" fill="${bgColor(.14)}" letter-spacing="3">${bits}</text>`;
+    });
+
+    // ── YOLO bounding box (bottom left) ──
+    s+=`<rect x="${.05*w}" y="${.72*h}" width="110" height="80" rx="3" fill="none" stroke="${bgColor2(.3)}" stroke-width="1.5"/>`;
+    s+=`<rect x="${.05*w}" y="${.72*h}" width="55" height="12" rx="2" fill="${bgColor2(.15)}"/>`;
+    s+=`<text x="${.05*w+6}" y="${.72*h+9}" font-family="DM Mono,monospace" font-size="8" fill="${bgColor2(.55)}">YOLO 94%</text>`;
+
+    return s;
+  },
+
+  projects: (w,h) => {
+    // Isometric grid / blueprint feel
+    let s='';
+    const cols=14, rows=8, cw=w/cols, ch=h/rows;
+    for(let r=0;r<=rows;r++)
+      s+=`<line x1="0" y1="${r*ch}" x2="${w}" y2="${r*ch}" stroke="${bgColor(.05)}" stroke-width="1"/>`;
+    for(let c=0;c<=cols;c++)
+      s+=`<line x1="${c*cw}" y1="0" x2="${c*cw}" y2="${h}" stroke="${bgColor(.05)}" stroke-width="1"/>`;
+    // diagonal accent lines
+    [[.1,.1,.5,.9],[.5,.05,.95,.6],[.0,.6,.4,1],[.6,.7,1,.3]].forEach(([x1,y1,x2,y2])=>{
+      s+=`<line x1="${x1*w}" y1="${y1*h}" x2="${x2*w}" y2="${y2*h}" stroke="${bgColor(.1)}" stroke-width="1" stroke-dasharray="6,10"/>`;
+    });
+    // project card outlines floating
+    [[.08,.12,220,130],[.72,.55,180,110],[.55,.1,160,100]].forEach(([px,py,pw,ph])=>{
+      s+=`<rect x="${px*w}" y="${py*h}" width="${pw}" height="${ph}" rx="8" fill="none" stroke="${bgColor(.09)}" stroke-width="1.5" stroke-dasharray="4,6"/>`;
+      s+=`<rect x="${px*w+10}" y="${py*h+10}" width="${pw-20}" height="8" rx="2" fill="${bgColor(.06)}"/>`;
+      s+=`<rect x="${px*w+10}" y="${py*h+26}" width="${pw-50}" height="5" rx="2" fill="${bgColor(.04)}"/>`;
+    });
+    return s;
+  },
+
+  reachbot: (w,h) => {
+    // Robotic arm silhouette + mechanical rings
+    let s='';
+    // big mechanical circles — joint rings
+    [[.82,.25,180],[.82,.25,140],[.82,.25,90]].forEach(([cx,cy,r])=>{
+      s+=`<circle cx="${cx*w}" cy="${cy*h}" r="${r}" fill="none" stroke="${bgColor3(.09)}" stroke-width="1.5"/>`;
+    });
+    // arm segments
+    const arm=[[.82,.25],[.68,.42],[.55,.6],[.45,.75]];
+    arm.forEach(([x,y],i)=>{
+      s+=`<circle cx="${x*w}" cy="${y*h}" r="10" fill="none" stroke="${bgColor3(.18)}" stroke-width="2"/>`;
+      if(i<arm.length-1){
+        s+=`<line x1="${x*w}" y1="${y*h}" x2="${arm[i+1][0]*w}" y2="${arm[i+1][1]*h}" stroke="${bgColor3(.13)}" stroke-width="3"/>`;
+      }
+    });
+    // gripper fingers
+    const gx=.45*w, gy=.75*h;
+    [[-18,-30],[0,-35],[18,-30]].forEach(([dx,dy])=>{
+      s+=`<line x1="${gx}" y1="${gy}" x2="${gx+dx}" y2="${gy+dy}" stroke="${bgColor3(.2)}" stroke-width="2"/>`;
+    });
+    // wheelchair silhouette (simple)
+    const wx=.12*w, wy=.6*h;
+    s+=`<circle cx="${wx+30}" cy="${wy+80}" r="35" fill="none" stroke="${bgColor(.1)}" stroke-width="2"/>`;
+    s+=`<circle cx="${wx+100}" cy="${wy+80}" r="35" fill="none" stroke="${bgColor(.1)}" stroke-width="2"/>`;
+    s+=`<line x1="${wx}" y1="${wy}" x2="${wx+80}" y2="${wy}" stroke="${bgColor(.1)}" stroke-width="2"/>`;
+    s+=`<line x1="${wx+80}" y1="${wy}" x2="${wx+120}" y2="${wy+80}" stroke="${bgColor(.1)}" stroke-width="2"/>`;
+    // dimension lines
+    [[.1,.1,.9,.1],[.1,.1,.1,.9]].forEach(([x1,y1,x2,y2])=>{
+      s+=`<line x1="${x1*w}" y1="${y1*h}" x2="${x2*w}" y2="${y2*h}" stroke="${bgColor(.04)}" stroke-width="1" stroke-dasharray="3,8"/>`;
+    });
+    return s;
+  },
+
+  awards: (w,h) => {
+    // Trophy / medal shapes + star field
+    let s='';
+    // star field
+    const stars=[[.1,.1],[.2,.35],[.05,.6],[.85,.08],[.92,.3],[.78,.5],[.88,.75],[.15,.8],[.5,.05],[.45,.9],[.6,.15],[.35,.7]];
+    stars.forEach(([sx,sy])=>{
+      const r=Math.random()*2+1.5;
+      s+=`<circle cx="${sx*w}" cy="${sy*h}" r="${r}" fill="${bgColor(.25)}"/>`;
+      s+=`<circle cx="${sx*w}" cy="${sy*h}" r="${r+5}" fill="none" stroke="${bgColor(.06)}" stroke-width="1"/>`;
+    });
+    // big faint star shape center
+    const cx=w*.75,cy=h*.3,or=120,ir=55,pts=5;
+    let star='';
+    for(let i=0;i<pts*2;i++){
+      const a=Math.PI/pts*i-Math.PI/2;
+      const r=i%2===0?or:ir;
+      star+=(i===0?'M':'L')+`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`;
+    }
+    s+=`<path d="${star}Z" fill="${bgColor(.06)}" stroke="${bgColor(.1)}" stroke-width="1.5"/>`;
+    // medal circle left
+    s+=`<circle cx="${w*.18}" cy="${h*.65}" r="70" fill="none" stroke="${bgColor2(.08)}" stroke-width="2"/>`;
+    s+=`<circle cx="${w*.18}" cy="${h*.65}" r="52" fill="none" stroke="${bgColor2(.06)}" stroke-width="1"/>`;
+    s+=`<line x1="${w*.18}" y1="${h*.65-70}" x2="${w*.18}" y2="${h*.65-100}" stroke="${bgColor2(.1)}" stroke-width="3"/>`;
+    return s;
+  },
+
+  skills: (w,h) => {
+    // Binary rain + code brackets
+    let s='';
+    // floating code chars
+    const chars=['{}','</>','01','fn()','::','++','AI','→'];
+    [[.08,.2],[.88,.15],[.05,.7],[.92,.6],[.15,.45],[.8,.8],[.5,.12],[.45,.88],[.7,.35]].forEach(([px,py],i)=>{
+      s+=`<text x="${px*w}" y="${py*h}" font-family="DM Mono,monospace" font-size="13" fill="${bgColor(.12)}" opacity="0.8">${chars[i%chars.length]}</text>`;
+    });
+    // radar/skill web faint
+    const rcx=w*.82,rcy=h*.35,rr=130,rn=6;
+    for(let ring=1;ring<=3;ring++){
+      let pts='';
+      for(let i=0;i<rn;i++){const a=Math.PI*2/rn*i-Math.PI/2;pts+=`${rcx+(rr*ring/3)*Math.cos(a)},${rcy+(rr*ring/3)*Math.sin(a)} `;}
+      s+=`<polygon points="${pts}" fill="none" stroke="${bgColor(.07)}" stroke-width="1"/>`;
+    }
+    for(let i=0;i<rn;i++){const a=Math.PI*2/rn*i-Math.PI/2;s+=`<line x1="${rcx}" y1="${rcy}" x2="${rcx+rr*Math.cos(a)}" y2="${rcy+rr*Math.sin(a)}" stroke="${bgColor(.05)}" stroke-width="1"/>`;}
+    // vertical bar chart faint left
+    [.6,.85,.5,.95,.7,.4,.75].forEach((ht,i)=>{
+      s+=`<rect x="${(0.06+i*.045)*w}" y="${(1-ht)*.8*h+h*.1}" width="${.03*w}" height="${ht*.8*h}" rx="3" fill="${bgColor(.07)}"/>`;
+    });
+    return s;
+  },
+
+  contact: (w,h) => {
+    // Paper plane + signal rings
+    let s='';
+    // signal rings from center-right
+    const cx=w*.75, cy=h*.4;
+    [60,120,190,270].forEach((r,i)=>{
+      s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${bgColor2(0.06-i*.01)}" stroke-width="1.5" stroke-dasharray="${i%2===0?'6,8':'3,6'}"/>`;
+    });
+    // paper plane
+    const px=cx-20, py=cy-10;
+    s+=`<polygon points="${px},${py} ${px-60},${py+30} ${px-15},${py+12}" fill="${bgColor(.2)}" stroke="${bgColor(.3)}" stroke-width="1.5"/>`;
+    s+=`<polygon points="${px},${py} ${px-60},${py+30} ${px-45},${py+2}" fill="${bgColor(.1)}" stroke="${bgColor(.2)}" stroke-width="1"/>`;
+    // envelope outline bottom-left
+    const ex=.08*w, ey=.65*h, ew=200, eh=130;
+    s+=`<rect x="${ex}" y="${ey}" width="${ew}" height="${eh}" rx="6" fill="none" stroke="${bgColor(.1)}" stroke-width="1.5"/>`;
+    s+=`<line x1="${ex}" y1="${ey}" x2="${ex+ew/2}" y2="${ey+eh*.5}" stroke="${bgColor(.08)}" stroke-width="1.5"/>`;
+    s+=`<line x1="${ex+ew}" y1="${ey}" x2="${ex+ew/2}" y2="${ey+eh*.5}" stroke="${bgColor(.08)}" stroke-width="1.5"/>`;
+    // dots scatter
+    [[.08,.08],[.92,.1],[.05,.5],[.95,.85],[.5,.95]].forEach(([dx,dy])=>{
+      s+=`<circle cx="${dx*w}" cy="${dy*h}" r="3" fill="${bgColor(.15)}"/>`;
+    });
+    return s;
+  }
+};
+
+let _bgCurrent = 'home';
+
+function drawBgScene(page, force=false){
+  if(page===_bgCurrent && !force) return;
+  _bgCurrent = page;
+  const w=window.innerWidth, h=window.innerHeight;
+  const fn=scenes[page]||scenes.home;
+  const content=fn(w,h);
+  const incoming = _activeSvg==='a' ? 'b' : 'a';
+  const outgoing = _activeSvg;
+  // write new scene to hidden svg
+  document.getElementById('bg-scene-'+incoming).innerHTML=content;
+  // crossfade
+  document.getElementById('bg-scene-'+outgoing).style.opacity='0';
+  document.getElementById('bg-scene-'+incoming).style.opacity='1';
+  _activeSvg=incoming;
+}
+
+function redrawCurrentBg(){ drawBgScene(_bgCurrent, true); }
+</script>
+</body>
+</html>
